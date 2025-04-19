@@ -6,32 +6,41 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
 
-form.addEventListener('submit', event => {
+form.addEventListener('submit', async event => {
   event.preventDefault();
-  const query = form.elements['search-text'].value;
+  
+  const query = form.elements['search-text'].value.trim();
   clearGallery();
-  if (query === '') { 
-      iziToast.error({
-          title: 'Error',
-          message: 'Please enter search parameters!',});
+
+  if (query === '') {
+    iziToast.error({
+      title: 'Error',
+      message: 'Please enter search parameters!',
+    });
     return;
   }
+
   showLoader();
-  const data = getImagesByQuery(query);
-  data.then(response => {
-    if (response.hits.length === 0) {
-        iziToast.error({
+
+  try {
+    const data = await getImagesByQuery(query);
+
+    if (data.hits.length === 0) {
+      iziToast.error({
         title: 'Error',
         message: 'Sorry, there are no images matching your search query. Please try again!',
       });
-      return;
+    } else {
+      createGallery(data.hits);
     }
-    createGallery(response.hits);
-  }).catch(() => {
-      iziToast.error();
-  })
-    .finally(() => {
-      hideLoader();
+  } catch (error) {
+    iziToast.error({
+      title: 'Error',
+      message: 'An error occurred while fetching images. Please try again later.',
     });
+  } finally {
+    hideLoader();
+  }
+
   form.reset();
 });

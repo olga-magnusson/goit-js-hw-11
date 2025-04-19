@@ -4,6 +4,10 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const gallery = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
 
+const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250
+});
 
 export function createGallery(arrImages) {
     gallery.innerHTML = arrImages.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
@@ -23,14 +27,9 @@ export function createGallery(arrImages) {
         </a>
     </li>
     `).join("");
-    
+    lightbox.refresh();
 }
 
-const lightbox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250
-});
-lightbox.refresh();
 
 export function clearGallery() {
     gallery.innerHTML = '';

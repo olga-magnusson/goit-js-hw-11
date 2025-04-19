@@ -15,6 +15,3 @@ export function getImagesByQuery(query){
     })
         .then((response) => { return response.data; });
 }
-
-
-
